@@ -35,6 +35,9 @@ import Sailfish.Silica 1.0
 Page {
     id: page
     SilicaFlickable{
+        id: flick
+        anchors.top: parent.top
+        anchors.fill: parent
         PullDownMenu{
             MenuItem{
                 text: "Select Metronome Sound"
@@ -50,8 +53,12 @@ Page {
                 onClicked: metronome.playing ? metronome.playing = false : metronome.playing = true
             }
         }
-        anchors.fill: parent
         Column {
+            anchors {
+                top: parent.top
+                margins: 5 * Theme.paddingLarge
+            }
+
             width: page.width
             spacing: Theme.paddingLarge
             Label{
@@ -89,7 +96,7 @@ Page {
                 id: numenatorSlider
                 width: parent.width
                 minimumValue: 1
-                maximumValue: 128
+                maximumValue: metronome.maximumNumenator
                 value: metronome.numenator
                 label: qsTr("Numenator")
                 stepSize: 1

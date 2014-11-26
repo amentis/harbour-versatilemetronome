@@ -5,15 +5,21 @@ Dialog {
     id: soundDialog
     property string selectedSound
 
+    DialogHeader {
+        acceptText: "Set click sound"
+        cancelText: "Cancel"
+    }
+
         Column {
+            anchors {
+                top: parent.top
+                margins: 5 * Theme.paddingLarge
+            }
+
             id: column
             width: (soundDialog.width/1.5)
             spacing: Theme.paddingMedium
             anchors.horizontalCenter: parent.horizontalCenter
-
-            DialogHeader {
-                title: "Click sound:"
-            }
 
             Button {
                 width: column.width

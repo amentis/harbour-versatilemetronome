@@ -13,6 +13,7 @@ class Metronome : public QObject
     Q_OBJECT
     Q_PROPERTY(quint16 tempo READ tempo WRITE setTempo NOTIFY tempoChanged)
     Q_PROPERTY(quint8 numenator READ numenator WRITE setNumenator NOTIFY numenatorChanged)
+    Q_PROPERTY(quint8 maximumNumenator READ maximumNumenator WRITE setMaximumNumenator NOTIFY maximumNumenatorChanged)
     Q_PROPERTY(quint8 denumenator READ denumenator WRITE setDenumenator NOTIFY denumenatorChanged)
     Q_PROPERTY(quint8 denumenatorPower READ denumenatorPower WRITE setDenumenatorPower NOTIFY denumenatorPowerChanged)
     Q_PROPERTY(bool playing READ playing WRITE setPlaying NOTIFY playingChanged)
@@ -40,6 +41,9 @@ public:
     QString sound();
     void setSound(QString newSound);
 
+    quint8 maximumNumenator();
+    void setMaximumNumenator(quint8& newMaximumNumenator);
+
 //    bool inFourths();
 //    void setInFourths(bool newInFourths);
 
@@ -51,6 +55,7 @@ public slots:
 private:
     quint16 _tempo;
     quint8 _numenator;
+    quint8 _maximumNumenator;
     quint8 _denumenatorPower;
     quint8 _denumenator;
     bool _playing;
@@ -71,11 +76,13 @@ signals:
     void playingChanged();
     void metronomeChanged();
     void soundChanged();
+    void maximumNumenatorChanged();
 //    void inFourthsChanged();
 
 private slots:
     void click();
     void playStop();
+    void updateMaximumNumenator();
 };
 
 #endif // METRONOME_H

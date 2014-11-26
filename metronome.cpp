@@ -8,6 +8,7 @@ Metronome::Metronome(QObject *parent) :
 
     _tempo = 120;
     _numenator = 4;
+    _maximumNumenator = 8;
     _denumenator = 4;
     _denumenatorPower = 2;
     _playing = false;
@@ -49,6 +50,7 @@ Metronome::Metronome(QObject *parent) :
     QObject::connect(this, SIGNAL(numenatorChanged()), this, SLOT(updateCount()));
     QObject::connect(this, SIGNAL(tempoChanged()), this, SLOT(updateCount()));
     QObject::connect(this, SIGNAL(soundChanged()), this, SLOT(updateSound()));
+    QObject::connect(this, SIGNAL(denumenatorChanged()), this, SLOT(updateMaximumNumenator()));
 //    QObject::connect(this, SIGNAL(inFourthsChanged()), this, SLOT(updateCount()));
 }
 
@@ -197,5 +199,29 @@ void Metronome::setSound(QString newSound){
     if (newSound != _sound){
         _sound = newSound;
         emit soundChanged();
+    }
+}
+
+quint8 Metronome::maximumNumenator(){
+    return _maximumNumenator;
+}
+
+void Metronome::setMaximumNumenator(quint8& newMaximumNumenator){
+    if (newMaximumNumenator != _maximumNumenator){
+        _maximumNumenator = newMaximumNumenator;
+        emit maximumNumenatorChanged();
+    }
+}
+
+void Metronome::updateMaximumNumenator(){
+    quint8 newMaximumDenumenator;
+    if (denumenator() == 128){
+        newMaximumDenumenator = denumenator();
+    } else {
+        newMaximumDenumenator = denumenator()*2;
+    }
+    setMaximumNumenator(newMaximumDenumenator);
+    if (denumenator() < numenator()){
+        setNumenator(_denumenator);
     }
 }
