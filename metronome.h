@@ -9,7 +9,6 @@
 
 class Metronome : public QObject
 {
-    friend class MetronomeThread;
     Q_OBJECT
     Q_PROPERTY(quint16 tempo READ tempo WRITE setTempo NOTIFY tempoChanged)
     Q_PROPERTY(quint8 numenator READ numenator WRITE setNumenator NOTIFY numenatorChanged)
