@@ -48,23 +48,36 @@ Page {
                     })
                 }
             }
-            MenuItem{
-                text: metronome.playing? "Stop" : "Start"
-                onClicked: metronome.playing ? metronome.playing = false : metronome.playing = true
-            }
         }
         Column {
             anchors {
                 top: parent.top
-                margins: 5 * Theme.paddingLarge
+                margins: 3 * Theme.paddingLarge
             }
 
             width: page.width
             spacing: Theme.paddingLarge
-            Label{
-                id: tempoLabel
-                x:Theme.paddingLarge
+            TextEdit{
+                id: tempoField
+                x: Theme.paddingLarge
                 text: qsTr("" + metronome.tempo)
+                color: Theme.primaryColor
+                inputMethodHints: Qt.ImhDigitsOnly
+                width: Theme.itemSizeSmall
+                EnterKey.enabled: text.length > 1
+                EnterKey.iconSource: "image://theme/icon-m-enter-accept"
+                EnterKey.onClicked: {
+                    focus = false
+                    if ((1 * text) < 40){
+                        metronome.tempo = 40
+                        text = "" + 40
+                    } else if ((1 * text) > 300){
+                        metronome.tempo = 300
+                        text = "" + 300
+                    } else {
+                        metronome.tempo = 1 * text
+                    }
+                }
             }
 
             Slider{
@@ -84,6 +97,8 @@ Page {
                 property: "tempo"
                 value: tempoSlider.value
             }
+
+
 
             Label{
                 id: signatureLabel
@@ -113,7 +128,7 @@ Page {
                 id: denumenatorSlider
                 width: parent.width
                 minimumValue: 0
-                maximumValue: 7
+                maximumValue: 5
                 value: metronome.denumenatorPower
                 label: qsTr("Denumenator")
                 stepSize: 1
@@ -124,13 +139,30 @@ Page {
                 property: "denumenatorPower"
                 value: denumenatorSlider.value
             }
+
 //            TextSwitch{
 //                x: Theme.paddingLarge
 //                id: inFourthsSwitch
 //                checked: metronome.inFourths
 //                automaticCheck: true
 //                text: "Count in Fourths"
+//                onCheckedChanged: metronome.inFourths = checked
 //            }
+
+            Label{
+                id : spacer
+                text: " "
+                x: Theme.paddingLarge
+                //yep, not a great idea, but works
+            }
+
+            Button{
+                x: Theme.paddingLarge
+                id: startStopButton
+                width: .9 * parent.width
+                text: metronome.playing? "Stop" : "Start"
+                onClicked: metronome.playing ? metronome.playing = false : metronome.playing = true
+            }
         }
     }
 }

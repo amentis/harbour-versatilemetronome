@@ -6,6 +6,7 @@
 #include <QtMultimedia/QSoundEffect>
 #include <QTimer>
 #include <QString>
+#include <QtConcurrent/QtConcurrent>
 
 class Metronome : public QObject
 {
@@ -64,7 +65,9 @@ private:
     quint8 currentBeat;
     QString* path;
     QString _sound;
-    bool _inFourths;
+//    bool _inFourths;
+
+    void clickInsideThread();
 
 signals:
     void tempoChanged();

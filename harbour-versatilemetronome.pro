@@ -19,7 +19,7 @@ DEPLOYMENT_PATH = /usr/share/$${TARGET}
 CONFIG += sailfishapp
 
 SOURCES += src/harbour-versatilemetronome.cpp \
-    metronome.cpp
+    src/metronome.cpp
 
 sounds.files = sounds
 sounds.path = $${DEPLOYMENT_PATH}
@@ -47,4 +47,4 @@ OTHER_FILES += qml/harbour-versatilemetronome.qml \
 INSTALLS += sounds
 
 HEADERS += \
-    metronome.h
+    src/metronome.h

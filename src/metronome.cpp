@@ -12,12 +12,10 @@ Metronome::Metronome(QObject *parent) :
     _denumenator = 4;
     _denumenatorPower = 2;
     _playing = false;
-    _inFourths = false;
+//    _inFourths = false;
 
     _clickHigh = new QSoundEffect(this);
     _clickLow = new QSoundEffect(this);
-
-//    path = new QString("/opt/sdk/harbour-versatilemetronome/usr/share/harbour-versatilemetronome/sounds/");
 
     path = new QString("/usr/share/harbour-versatilemetronome/sounds/");
 
@@ -140,19 +138,7 @@ void Metronome::playStop() {
 }
 
 void Metronome::click(){
-    if (currentBeat == 1){
-        _clickHigh->play();
-    } else {
-        _clickLow->play();
-    }
-    currentBeat++;
-//    if (inFourths()){
-
-//    } else {
-        if (currentBeat > numenator()){
-            currentBeat = 1;
-//        }
-    }
+    QtConcurrent::run(this, &Metronome::clickInsideThread);
 }
 
 void Metronome::updateCount(){
@@ -160,7 +146,7 @@ void Metronome::updateCount(){
         _timer->stop();
     }
 //    if (inFourths()){
-
+//        _timer->setInterval(60000 / (((float)denumenator() / 4.f) / tempo() * ((float)denumenator()/4.f)));
 //    } else {
         _timer->setInterval(60000 / (tempo() * ((float)denumenator()/4.f)));
 //    }
@@ -191,6 +177,22 @@ void Metronome::updateSound(){
     }
 }
 
+void Metronome::clickInsideThread(){
+    if (currentBeat == 1){
+        _clickHigh->play();
+    } else {
+        _clickLow->play();
+    }
+    currentBeat++;
+//    if (inFourths()){
+
+//    } else {
+        if (currentBeat > numenator()){
+            currentBeat = 1;
+        }
+//    }
+}
+
 QString Metronome::sound(){
     return _sound;
 }
@@ -214,13 +216,8 @@ void Metronome::setMaximumNumenator(quint8& newMaximumNumenator){
 }
 
 void Metronome::updateMaximumNumenator(){
-    quint8 newMaximumDenumenator;
-    if (denumenator() == 128){
-        newMaximumDenumenator = denumenator();
-    } else {
-        newMaximumDenumenator = denumenator()*2;
-    }
-    setMaximumNumenator(newMaximumDenumenator);
+    quint8 newMaximumNumenator = (denumenator()*2);
+    setMaximumNumenator(newMaximumNumenator);
     if (denumenator() < numenator()){
         setNumenator(_denumenator);
     }
