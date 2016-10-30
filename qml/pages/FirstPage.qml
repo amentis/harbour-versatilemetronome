@@ -36,8 +36,8 @@ Page {
     id: page
     SilicaFlickable{
         id: flick
-        anchors.top: parent.top
         anchors.fill: parent
+        contentHeight: column.height + column.anchors.margins
         PullDownMenu{
             MenuItem{
                 text: "Select Metronome Sound"
@@ -51,6 +51,7 @@ Page {
         }
 
         Column {
+            id: column
             anchors {
                 top: parent.top
                 margins: 2 * Theme.paddingLarge
@@ -75,10 +76,10 @@ Page {
 
                 TextEdit{
                     id: tempoField
-                    //x: Theme.paddingLarge
                     anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.horizontalCenterOffset: 19
+                    anchors.horizontalCenterOffset: Math.round(19/540*Screen.width)
                     text: qsTr("" + metronome.tempo)
+                    font.pixelSize: Theme.fontSizeMedium
                     color: Theme.primaryColor
                     inputMethodHints: Qt.ImhDigitsOnly
                     width: Theme.itemSizeSmall
@@ -152,7 +153,6 @@ Page {
 
                 Label{
                     id: signatureLabel
-                    //x: Theme.paddingLarge
                     anchors.horizontalCenter: parent.horizontalCenter
                     text: qsTr(metronome.numenator + "/" + metronome.denumenator)
                 }
@@ -202,7 +202,6 @@ Page {
             Button{
                 anchors.horizontalCenter: parent.horizontalCenter
                 id: startStopButton
-                width: .9 * parent.width
                 text: metronome.playing? "Stop" : "Start"
                 onClicked: metronome.playing ? metronome.playing = false : metronome.playing = true
             }
