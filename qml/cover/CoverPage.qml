@@ -33,18 +33,43 @@ import Sailfish.Silica 1.0
 
 CoverBackground {
 
-    Column {
+    Image {
+        source: "cover.png"
+        opacity: 0.1
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
+    }
+
+    Column {
+        anchors {
+            horizontalCenter: parent.horizontalCenter
+            top: parent.top
+            topMargin: Theme.paddingLarge
+        }
+
+        Label {
+            text: qsTr("Tempo")
+            color: Theme.highlightColor
+            font.family: Theme.fontFamilyHeading
+        }
 
         Label {
             id: tempo
             text: qsTr("" + metronome.tempo)
+            font.pixelSize: Theme.fontSizeExtraLarge
+
+        }
+
+        Label {
+            text: qsTr("Time signature")
+            color: Theme.highlightColor
+            font.family: Theme.fontFamilyHeading
         }
 
         Label {
             id: time_signature
             text: qsTr(metronome.numenator + "/" + metronome.denumenator)
+            font.pixelSize: Theme.fontSizeExtraLarge
         }
     }
 

@@ -26,6 +26,7 @@ sounds.path = $${DEPLOYMENT_PATH}
 
 OTHER_FILES += qml/harbour-versatilemetronome.qml \
     qml/cover/CoverPage.qml \
+    qml/cover/cover.png \
     qml/pages/FirstPage.qml \
     qml/pages/ChooseSound.qml \
     rpm/harbour-versatilemetronome.changes.in \

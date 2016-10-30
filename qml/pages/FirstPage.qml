@@ -36,8 +36,8 @@ Page {
     id: page
     SilicaFlickable{
         id: flick
-        anchors.top: parent.top
         anchors.fill: parent
+        contentHeight: column.height + column.anchors.margins
         PullDownMenu{
             MenuItem{
                 text: "Select Metronome Sound"
@@ -49,117 +49,159 @@ Page {
                 }
             }
         }
+
         Column {
+            id: column
             anchors {
                 top: parent.top
-                margins: 3 * Theme.paddingLarge
+                margins: 2 * Theme.paddingLarge
             }
 
             width: page.width
-            spacing: Theme.paddingLarge
-            TextEdit{
-                id: tempoField
-                x: Theme.paddingLarge
-                text: qsTr("" + metronome.tempo)
-                color: Theme.primaryColor
-                inputMethodHints: Qt.ImhDigitsOnly
-                width: Theme.itemSizeSmall
-                EnterKey.enabled: text.length > 1
-                EnterKey.iconSource: "image://theme/icon-m-enter-accept"
-                EnterKey.onClicked: {
-                    focus = false
-                    if ((1 * text) < 40){
-                        metronome.tempo = 40
-                        text = "" + 40
-                    } else if ((1 * text) > 300){
-                        metronome.tempo = 300
-                        text = "" + 300
-                    } else {
-                        metronome.tempo = 1 * text
+            spacing: Theme.paddingLarge * 2.5
+
+
+            Column {
+                spacing: Theme.paddingLarge
+                width: parent.width
+                Label {
+                    text: qsTr("Tempo")
+                    color: Theme.highlightColor
+                    font.family: Theme.fontFamilyHeading
+                    anchors {
+                        right: parent.right
+                        rightMargin: Theme.paddingLarge
                     }
+                }
+
+                TextEdit{
+                    id: tempoField
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.horizontalCenterOffset: Math.round(19/540*Screen.width)
+                    text: qsTr("" + metronome.tempo)
+                    font.pixelSize: Theme.fontSizeMedium
+                    color: Theme.primaryColor
+                    inputMethodHints: Qt.ImhDigitsOnly
+                    width: Theme.itemSizeSmall
+                    EnterKey.enabled: text.length > 1
+                    EnterKey.iconSource: "image://theme/icon-m-enter-accept"
+                    EnterKey.onClicked: {
+                        focus = false
+                        if ((1 * text) < 40){
+                            metronome.tempo = 40
+                            text = "" + 40
+                        } else if ((1 * text) > 300){
+                            metronome.tempo = 300
+                            text = "" + 300
+                        } else {
+                            metronome.tempo = 1 * text
+                        }
+                    }
+                }
+
+                Slider{
+                    id: tempoSlider
+                    width: parent.width
+                    minimumValue: tensOnesRow.tens ? 40 : metronome.tempo - (metronome.tempo % 10)
+                    maximumValue: tensOnesRow.tens ? 300 : metronome.tempo - (metronome.tempo % 10) + 9
+                    value: metronome.tempo
+                    label: qsTr("BPM")
+                    stepSize: tensOnesRow.tens ? 10 : 1
+                }
+
+                Row{
+                    id: tensOnesRow
+                    spacing: Theme.paddingLarge
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    property bool tens: true
+
+                    Button{
+                        id: tensButton
+                        text: 'Tens'
+                        onClicked: parent.tens = true
+                        enabled: parent.tens ? false : true
+                    }
+
+                    Button{
+                        id: onesButton
+                        text: 'Ones'
+                        onClicked: parent.tens = false
+                        enabled: metronome.tempo >= 300 || !parent.tens ? false : true
+                    }
+                }
+
+                Binding{
+                    target: metronome
+                    property: "tempo"
+                    value: tempoSlider.value
                 }
             }
 
-            Slider{
-                x: Theme.paddingLarge
-                id: tempoSlider
+            Column {
+                spacing: Theme.paddingLarge
                 width: parent.width
-                minimumValue: 40
-                maximumValue: 300
-                value: metronome.tempo
-                label: qsTr("Tempo")
-                stepSize: 1
 
-            }
+                Label {
+                    text: qsTr("Time signature")
+                    color: Theme.highlightColor
+                    font.family: Theme.fontFamilyHeading
+                    anchors {
+                        right: parent.right
+                        rightMargin: Theme.paddingLarge
+                    }
+                }
 
-            Binding{
-                target: metronome
-                property: "tempo"
-                value: tempoSlider.value
-            }
+                Label{
+                    id: signatureLabel
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    text: qsTr(metronome.numenator + "/" + metronome.denumenator)
+                }
 
+                Slider{
+                    id: numenatorSlider
+                    width: parent.width
+                    minimumValue: 1
+                    maximumValue: metronome.maximumNumenator
+                    value: metronome.numenator
+                    label: qsTr("Numenator")
+                    stepSize: 1
+                }
 
+                Binding{
+                    target: metronome
+                    property: "numenator"
+                    value: numenatorSlider.value
+                }
 
-            Label{
-                id: signatureLabel
-                x: Theme.paddingLarge
-                text: qsTr(metronome.numenator + "/" + metronome.denumenator)
-            }
+                Slider{
+                    id: denumenatorSlider
+                    width: parent.width
+                    minimumValue: 0
+                    maximumValue: 5
+                    value: metronome.denumenatorPower
+                    label: qsTr("Denumenator")
+                    stepSize: 1
+                }
 
-            Slider{
-                x: Theme.paddingLarge
-                id: numenatorSlider
-                width: parent.width
-                minimumValue: 1
-                maximumValue: metronome.maximumNumenator
-                value: metronome.numenator
-                label: qsTr("Numenator")
-                stepSize: 1
-            }
+                Binding{
+                    target: metronome
+                    property: "denumenatorPower"
+                    value: denumenatorSlider.value
+                }
 
-            Binding{
-                target: metronome
-                property: "numenator"
-                value: numenatorSlider.value
-            }
-
-            Slider{
-                x: Theme.paddingLarge
-                id: denumenatorSlider
-                width: parent.width
-                minimumValue: 0
-                maximumValue: 5
-                value: metronome.denumenatorPower
-                label: qsTr("Denumenator")
-                stepSize: 1
-            }
-
-            Binding{
-                target: metronome
-                property: "denumenatorPower"
-                value: denumenatorSlider.value
-            }
-
-//            TextSwitch{
-//                x: Theme.paddingLarge
-//                id: inFourthsSwitch
-//                checked: metronome.inFourths
-//                automaticCheck: true
-//                text: "Count in Fourths"
-//                onCheckedChanged: metronome.inFourths = checked
-//            }
-
-            Label{
-                id : spacer
-                text: " "
-                x: Theme.paddingLarge
-                //yep, not a great idea, but works
+    //            TextSwitch{
+    //                x: Theme.paddingLarge
+    //                id: inFourthsSwitch
+    //                checked: metronome.inFourths
+    //                automaticCheck: true
+    //                text: "Count in Fourths"
+    //                onCheckedChanged: metronome.inFourths = checked
+    //            }
             }
 
             Button{
-                x: Theme.paddingLarge
+                anchors.horizontalCenter: parent.horizontalCenter
                 id: startStopButton
-                width: .9 * parent.width
                 text: metronome.playing? "Stop" : "Start"
                 onClicked: metronome.playing ? metronome.playing = false : metronome.playing = true
             }
